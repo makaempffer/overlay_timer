@@ -26,7 +26,7 @@ class MainWindow(QtWidgets.QWidget):
 
         self.clock_idle = False
         self.last_save = 0
-        self.setFixedSize(220, 140)
+        self.setFixedSize(240, 140)
         
         self.setup()
 
@@ -92,12 +92,6 @@ class MainWindow(QtWidgets.QWidget):
             self.current_time = elapsed_time
             self.last_save += 1
             self.logic_engine.timer_logic()
-
-
-    
-
-
-
 
 
 

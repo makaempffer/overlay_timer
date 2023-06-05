@@ -41,7 +41,7 @@ class Engine:
         self.setLabelValue("center", "",self.window.timer)
         self.setLabelValue("leftUp", "LEVEL: ",self.user.level)
         self.setLabelValue("leftBottom", "SCORE: ",self.user.score)
-        self.setLabelValue("rightUp", "NEXT LVL: ",str(int(self.user.next_level)))
+        self.setLabelValue("rightUp", "GOAL: ",str(int(self.user.next_level)))
         self.setLabelValue("rightBottom", "DAY: ",self.user.day_counter)
 
     def handleKeyPress(self, event):
@@ -67,8 +67,6 @@ class Engine:
         self.updateLabels()
         self.user.update_user()
         
-        
-    
     
     def setLabelValue(self, position="leftUp",label_text="",target="text here"):
         target_str = str(target)
