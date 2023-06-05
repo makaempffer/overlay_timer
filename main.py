@@ -90,7 +90,7 @@ class MainWindow(QtWidgets.QWidget):
             time.sleep(1)  # Wait for 1 second
             self.timer = formatted_time
             self.current_time = elapsed_time
-            self.last_save = elapsed_time
+            self.last_save += 1
             self.logic_engine.timer_logic()
 
 

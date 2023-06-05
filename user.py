@@ -4,7 +4,7 @@ class User:
     def __init__(self):
         self.level = 0
         self.score = 0
-        self.dayTimer = MAX_DAY
+        self.day_timer = MAX_DAY
         self.next_level = 10
         self.last_level = 0
         self.next_event = 100
@@ -12,15 +12,17 @@ class User:
         self.day_counter = 0
     
     def calculate_next_level(self):
-        self.dayTimer += 1
-        if self.score >= self.next_level:
+        print(self.level)
+        if int(self.score) > int(self.next_level):
+            print("LEVEL UP")   
+            self.score = 0
             self.last_level = self.level
-            self.next_level = self.score * 1.77
+            self.next_level = self.next_level * 1.25
             self.level += 1
         
-        if self.dayTimer >= self.max_day:
+        if self.day_timer >= self.max_day:
             self.day_counter += 1
-            self.dayTimer = 0
+            self.day_timer = 0
         
 
     

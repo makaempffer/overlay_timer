@@ -1,7 +1,5 @@
 from settings import *
 import json
-
-
 class Engine:
     def __init__(self, user, window) -> None:
         self.user = user
@@ -18,12 +16,24 @@ class Engine:
         self.user.next_event = self.settings['next_event']
         self.user.day_counter = self.settings['day']
         print("[ENGINE-USER] - USER LOADED")
+
+    def create_save(self):
+        self.settings['score'] = self.user.score
+        self.settings['next_level'] = self.user.next_level  
+        self.settings['next_event'] =  self.user.next_event
+        self.settings['day'] = self.user.day_counter
+        self.settings['level'] = self.user.level
+        print("[ENGINE-USER] - SAVE CREATED")
     
+
     def save_user(self):
+        self.create_save()
         if self.settings != None:
             print("[ENGINE-USER] - SAVING USER...")
             with open('user_settings.json', 'w') as file:
-                json.dump(self.settings, file, indent=4)
+                data_dict = {"user": self.settings}
+                print(data_dict)
+                json.dump(data_dict, file, indent=4)
                 print("[ENGINE-FILE] - USER SAVED")
 
 
@@ -31,7 +41,7 @@ class Engine:
         self.setLabelValue("center", "",self.window.timer)
         self.setLabelValue("leftUp", "LEVEL: ",self.user.level)
         self.setLabelValue("leftBottom", "SCORE: ",self.user.score)
-        self.setLabelValue("rightUp", "NEXT LVL: ",self.user.next_level)
+        self.setLabelValue("rightUp", "NEXT LVL: ",str(int(self.user.next_level)))
         self.setLabelValue("rightBottom", "DAY: ",self.user.day_counter)
 
     def handleKeyPress(self, event):
@@ -50,6 +60,7 @@ class Engine:
     def handle_score(self):
         if len(self.current_word) >= 2:
             self.user.add_score()
+            self.user.day_timer += 1
             self.current_word = ""
     
     def update(self):
@@ -79,7 +90,11 @@ class Engine:
     def timer_logic(self):
         print("[ENGINE-TIMER] - UPDATE")
         self.updateLabels()
-        if int(self.window.last_save) > 10:
+        if self.user.day_counter >= self.user.next_event:
+            # TODO EVENT CODE
+            print("[ENGINE-TIMER] - EVENT REACHED")
+            self.user.next_event += EVENT_INCREMENT
+        if int(self.window.last_save) > AUTO_SAVE_TIME:
             self.save_user()
             self.window.last_save = 0
 
