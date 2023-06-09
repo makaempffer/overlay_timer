@@ -18,12 +18,12 @@ class MainWindow(QtWidgets.QWidget):
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.setGeometry(
             QtWidgets.QStyle.alignedRect(
-                QtCore.Qt.LeftToRight, QtCore.Qt.AlignCenter,
+                QtCore.Qt.LeftToRight, QtCore.Qt.AlignLeft,
                 QtCore.QSize(220, 200),
                 QtWidgets.qApp.desktop().availableGeometry()
             )
         )
-
+        self.start_time = 0
         self.clock_idle = False
         self.last_save = 0
         self.setFixedSize(240, 140)
@@ -32,9 +32,10 @@ class MainWindow(QtWidgets.QWidget):
 
         # THREAD AND TIMER STARTER
         self.timer = "START"
-        timer_thread = threading.Thread(target=self.print_elapsed_time)
+        timer_thread = threading.Thread(target=self.run_clock)
         timer_thread.daemon = True
         timer_thread.start()
+
         
         
 
@@ -48,9 +49,9 @@ class MainWindow(QtWidgets.QWidget):
         main_layout.addLayout(first_column_layout)
 
         self.label1 = QLabel("LEVEL")
-        self.label1.setStyleSheet("color: white")
+        self.label1.setStyleSheet("color: purple")
         self.label2 = QLabel("PROGRESS")
-        self.label2.setStyleSheet("color: white")
+        self.label2.setStyleSheet("color: purple")
         first_column_layout.addWidget(self.label1)
         first_column_layout.addWidget(self.label2) 
 
@@ -59,16 +60,16 @@ class MainWindow(QtWidgets.QWidget):
         main_layout.addLayout(second_column_layout)
 
         self.big_label = QLabel("POM. TIMER")
-        self.big_label.setStyleSheet("color: white")
+        self.big_label.setStyleSheet("color: purple")
         second_column_layout.addWidget(self.big_label)
         # Third column
         third_column_layout = QVBoxLayout()
         main_layout.addLayout(third_column_layout)
 
         self.label3 = QLabel("LAST KEY")
-        self.label3.setStyleSheet("color: white")
+        self.label3.setStyleSheet("color: purple")
         self.label4 = QLabel("CUR. DAY")
-        self.label4.setStyleSheet("color: white")
+        self.label4.setStyleSheet("color: purple")
         third_column_layout.addWidget(self.label3)
         third_column_layout.addWidget(self.label4)
     
@@ -77,16 +78,16 @@ class MainWindow(QtWidgets.QWidget):
         self.logic_engine = Engine(self.user, self)
         self.current_time = 0
     
-    def print_elapsed_time(self):
+    def run_clock(self):
         print("[TIMER] - START")
-        start_time = time.time()
+        self.start_time = time.time()
         elapsed_time = 0
 
         while not self.clock_idle:
             
-            elapsed_time = time.time() - start_time
+            elapsed_time = time.time() - self.start_time
+        
             formatted_time = time.strftime("%H:%M:%S", time.gmtime(elapsed_time))
-            print("[" + formatted_time + "]")
             time.sleep(1)  # Wait for 1 second
             self.timer = formatted_time
             self.current_time = elapsed_time

@@ -10,11 +10,11 @@ class User:
         self.next_event = 100
         self.max_day = MAX_DAY
         self.day_counter = 0
+        self.total_score = 0
     
     def calculate_next_level(self):
         print(self.level)
         if int(self.score) > int(self.next_level):
-            print("LEVEL UP")   
             self.score = 0
             self.last_level = self.level
             self.next_level = self.next_level * 1.25
@@ -27,8 +27,8 @@ class User:
 
     
     def add_score(self):
-        print(self.score)
         self.score += 1
+        self.total_score += 1
     
     def update_user(self):
         self.calculate_next_level()

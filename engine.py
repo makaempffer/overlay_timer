@@ -1,3 +1,4 @@
+import time
 from settings import *
 import json
 class Engine:
@@ -11,6 +12,7 @@ class Engine:
         
     def load_user(self):
         self.user.level = self.settings['level']
+        self.user.total_score = self.settings['total_score']
         self.user.score = self.settings['score']
         self.user.next_level = self.settings['next_level']
         self.user.next_event = self.settings['next_event']
@@ -18,11 +20,13 @@ class Engine:
         print("[ENGINE-USER] - USER LOADED")
 
     def create_save(self):
+        self.settings['level'] = self.user.level
         self.settings['score'] = self.user.score
+        self.settings['total_score'] = self.user.total_score
         self.settings['next_level'] = self.user.next_level  
         self.settings['next_event'] =  self.user.next_event
         self.settings['day'] = self.user.day_counter
-        self.settings['level'] = self.user.level
+        
         print("[ENGINE-USER] - SAVE CREATED")
     
 
@@ -32,7 +36,6 @@ class Engine:
             print("[ENGINE-USER] - SAVING USER...")
             with open('user_settings.json', 'w') as file:
                 data_dict = {"user": self.settings}
-                print(data_dict)
                 json.dump(data_dict, file, indent=4)
                 print("[ENGINE-FILE] - USER SAVED")
 
@@ -40,9 +43,9 @@ class Engine:
     def updateLabels(self):
         self.setLabelValue("center", "",self.window.timer)
         self.setLabelValue("leftUp", "LEVEL: ",self.user.level)
-        self.setLabelValue("leftBottom", "SCORE: ",self.user.score)
+        self.setLabelValue("leftBottom", "SCORE: ", str(self.user.score) + " (" + str(self.user.total_score) + ")")
         self.setLabelValue("rightUp", "GOAL: ",str(int(self.user.next_level)))
-        self.setLabelValue("rightBottom", "DAY: ",self.user.day_counter)
+        self.setLabelValue("rightBottom", "DAILY: ",self.user.day_counter)
 
     def handleKeyPress(self, event):
         # Update the player
@@ -85,6 +88,12 @@ class Engine:
         elif position == "rightBottom":
             self.window.label4.setText(label_text + target_str)
     
+    def highlight_label(self, label_pos: str="center", font_color:str = "green"):
+        if label_pos == "center":
+            self.window.big_label.setStyleSheet("""
+            color: {color};
+            """.format(color=font_color))
+    
     def timer_logic(self):
         print("[ENGINE-TIMER] - UPDATE")
         self.updateLabels()
@@ -95,8 +104,16 @@ class Engine:
         if int(self.window.last_save) > AUTO_SAVE_TIME:
             self.save_user()
             self.window.last_save = 0
+        
+        if self.window.current_time >= POMODORO_LIMIT_TIMER * 1: # Minutes
+            self.highlight_label("center")
+            self.window.start_time = time.time()
+        elif self.window.current_time < 15: # Wait time to start
+            self.highlight_label("center", "yellow")
+        else:
+            self.highlight_label("center", "white")
 
-def load_read_save_JSON(path, consumer_self, property="user"):
+def load_read_save_JSON(path: str, consumer_self: object, property="user") -> None:
     target_file = open(path)
     data = json.load(target_file)
     consumer_self.settings = data[property]

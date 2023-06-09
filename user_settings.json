@@ -1,9 +1,10 @@
 {
     "user": {
-        "level": 0,
-        "score": 1,
-        "next_level": 10,
-        "next_event": 8,
-        "day": 6
+        "level": 5,
+        "score": 5,
+        "total_score": 40,
+        "next_level": 30.517578125,
+        "next_event": 12,
+        "day": 11
     }
 }
